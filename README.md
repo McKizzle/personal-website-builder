@@ -24,10 +24,12 @@ To create a website the website folder must obey the following rules.
   3. Each page must have it's own directory. The directory needs to contain the following files.  
     a. ``DirectoryName.md``
     b. ``tags.tgs``
-    c. The ``DirectoryName.md`` markdown file must contain only a single \# to define the title. 
-    d. 
-        > `` # Page Title ``
-        > `` more markdown text....``
-    c. 
-        
+    c. The ``DirectoryName.md`` is a markdown file. The program finds the first title line and uses it for the title of the document.  
+    e. The directory name will also be the name of the html document. 
+
+# TODO 
+  - Still not very customizable. Fix this. 
+  - Allow custom templates per page. 
+  - Allow the program to recursively traverse the website folder.  
+
 
