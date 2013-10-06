@@ -148,6 +148,9 @@ sub markdown_to_html {
     return $html;
 }
 
+# Takes in a document components and writes it to a folder.
+
+
 return 1;
 
 

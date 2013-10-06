@@ -76,6 +76,9 @@ for(keys $docs) {
     $master_template->param('page_title' => $document{'title'});
     $master_template->param('website_title' => $website_title);
 
+    print $document{'computer_abs_path'}."\n";
+    print $document{'webserver_abs_path'}."\n";
+
     local *FH;
     open (FH, ">$document{'computer_abs_path'}/$fn.html") or die "Cannot open temporary file: $!\n";
 
@@ -122,8 +125,8 @@ foreach my $tag (sort {$a cmp $b } (keys %tags_to_docs)) {
 
     $index_doc{'content'} .= $content_addition;
 }
-print $index_doc{'content'}."\n\n";
-$index_doc{'content'} = Website::Simple::markdown_to_html($index_doc{'content'});
+#print $index_doc{'content'}."\n\n";
+#$index_doc{'content'} = Website::Simple::markdown_to_html($index_doc{'content'});
 #print $index_doc{'content'}."\n\n";
 
 my $fn = 'index';
