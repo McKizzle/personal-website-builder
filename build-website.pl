@@ -126,7 +126,7 @@ foreach my $tag (sort {$a cmp $b } (keys %tags_to_docs)) {
     $index_doc{'content'} .= $content_addition;
 }
 #print $index_doc{'content'}."\n\n";
-#$index_doc{'content'} = Website::Simple::markdown_to_html($index_doc{'content'});
+$index_doc{'content'} = Website::Simple::markdown_to_html($index_doc{'content'});
 #print $index_doc{'content'}."\n\n";
 
 my $fn = 'index';
