@@ -32,7 +32,7 @@ sub slurp_markdown_documents {
 
     my $documents = {};
     for(@{$args{'dirs'}}) {
-        my $markdown = read_file("$_/$_.md");
+        my $markdown = read_file("$_/$_.md"); #First extract the master file. 
 
         my $document = {
             'computer_abs_path'    => getcwd()."/$_",
@@ -40,7 +40,7 @@ sub slurp_markdown_documents {
             'file_name'         => "$_",
             'content'           => $markdown
         };
-
+        
         $documents->{$_} = $document;
     }
     
@@ -128,56 +128,26 @@ sub split_titles_from_markdown {
 #   @return the html conversion.
 sub markdown_to_html {
     my $markdown = shift;
+    
+    #If there exists a leading white space then remove it. Or unexpected html will be
+    # outputted by pandoc. 
+    $markdown =~ s/^\s*//g; 
 
     my $temporary_file = "/tmp/markdown.tmp";
 
     local *FH;
     open (FH, ">$temporary_file") or die "Cannot open temporary file: $!\n";
 
-    print FH $markdown;
+
+    print FH $markdown."\n";
+    close FH; #hmm not sure by 100% how temp files work but hopefully closing FH on both
+                # unix and linux will keep the file open for the script session. 
 
     my $html = `pandoc $temporary_file`;
     
-    close FH;
-
     return $html;
 }
 
 return 1;
-
-__END__
-
-SCRAP
-
-# This function takes in markdown text finds meta tags and extracts the 'categories information
-# a hash => array reference is returned. 
-sub markdown_for_category_tags {
-    my $markdown = shift; 
-    
-    my $tags = [];
-    while ($markdown =~ /<meta\s+name=["]\s*categories\s*["]\s*content=["]([a-zA-Z,\s]+?)["]>/gmi) {
-       push @$tags, map { $_ =~ s/^\s*//; $_ =~ s/\s*$//; $_} split(',', $1);
-    }
-    return $tags;
-}
-
-#Remove the meta tags from markdown text. 
-sub markdown_for_markdown_without_meta_tags {
-    my $markdown = shift; 
-    $markdown =~ s/<meta\s+name=["]\s*categories\s*["]\s*content=["]([a-zA-Z,\s]+?)["]>//gmi;
-
-    return $markdown;
-}
-
-# Extracts the meta tags from the markdown text. 
-sub markdown_for_meta_tags {
-    my $markdown = shift; 
-    
-    my $tags = '';
-    while ($markdown =~ /(<meta\s+name=["]\s*categories\s*["]\s*content=["]([a-zA-Z,\s]+?)["]>)/gmi) {
-       $tags .= "$1\n";
-    }
-    return $tags;  
-}
 
 

@@ -61,7 +61,6 @@ $page_navigation = Website::Simple::markdown_to_html($page_navigation);
 
 #Convert all of the documents to html and write them to html files. 
 # while doing that also build a tag index. 
-#print Dumper $docs;
 my %tags_to_docs =();
 for(keys $docs) {
     my %document = %{$docs->{$_}};
@@ -99,7 +98,6 @@ for(keys $docs) {
     }
     $master_template->clear_params();
 }
-#print Dumper \%tags_to_docs;
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #Now lets go through and build the index page for the website.
@@ -124,7 +122,7 @@ foreach my $tag (sort {$a cmp $b } (keys %tags_to_docs)) {
 
     $index_doc{'content'} .= $content_addition;
 }
-#print $index_doc{'content'}."\n\n";
+print $index_doc{'content'}."\n\n";
 $index_doc{'content'} = Website::Simple::markdown_to_html($index_doc{'content'});
 #print $index_doc{'content'}."\n\n";
 
@@ -149,71 +147,3 @@ $master_template->clear_params();
 my $cp_results = `cp $args->{'path'}/$constants->{'master_dir'}/${$constants->{'master_template_css_files'}}[0] $fn.css`;
 
 
-#$, = ", ";
-#print $master_template->param();
-#print Dumper $html;
-
-
-__END__
-
-#TODO Tools needed. 
-#   2. A function that generates an master index page based off of the folders and their tags. 
-
-
-#TODO List of requirements
-# 1. the 'website-components' will contain the components for the master template of the website. 
-# 2. the index page will be the default home page. (aka there is a reserved 'Index' folder name. This cannot be used!! 
-#   a. The index page will be built using the set of folders and tags. 
-# 3. If a folder has a htmltp or csstp then override the master tp. But it must contain teh same components. 
-
-# The css styles to import into the document. 
-my $styles_to_use = ['website_components/master_template.csstp', 'website_components/master_template.csstp', 'website_components/master_template.csstp', 'website_components/master_template.csstp'];
-
-my $page_css_links = undef; 
-$page_css_links = join "\n", map {"<link href=\'$_\' rel=\'stylesheet\' type=\'text/css\'>"} @$styles_to_use;
-
-#Now get the website title
-my $website_title = "<h2> www.crmckay.com </h2>";
-
-#Now get the navigatoin section of the website. 
-my $page_navigation = `pandoc website_components/navigation.md`;
-
-#First parse the markdown into html with pandoc. 
-#print $website_navigation;
-
-my $page_title = "<h1> Empty <h1>\n";
-my $page_content = "Nuthin to say\n";
-
-$template->param(website_title => $website_title);
-$template->param(page_css_links => $page_css_links);
-$template->param(page_navigation => $page_navigation);
-$template->param(page_title => $page_title);
-$template->param(page_content => $page_content);
-
-#Write the content
-print $template->output;
-
-__END__ TESTING SCRAP
-$, = ", "; #seperate items with comments in print statement.
-
-print "Listing directories only while excluding certain files.\n";
-my $listing = Directory::ls('path'=>$args->{'path'}, 'ls_dir_only'=>1, 'exclude_files'=>$reserved_folders, 'include_special'=>1);
-print @$listing; print "\n----------------\n";
-
-
-print "Listing directories only while excluding certain files. Also remove special directories.\n";
-$listing = Directory::ls('path'=>$args->{'path'}, 'ls_dir_only'=>1, 'exclude_files'=>$reserved_folders, 'include_special'=>0);
-print @$listing; print "\n----------------\n";
-
-print "Exclude certain files only.\n";
-$listing = Directory::ls('path'=>$args->{'path'}, 'ls_dir_only'=>0, 'exclude_files'=>$reserved_folders, 'include_special'=>1);
-print @$listing; print "\n----------------\n";
-
-print "List all files except for special files and excluded files.\n";
-$listing = Directory::ls('path'=>$args->{'path'}, 'ls_dir_only'=>0, 'exclude_files'=>$reserved_folders, 'include_special'=>0);
-print @$listing; print "\n----------------\n";
-
-
-print "List all files.\n";
-$listing = Directory::ls('path'=>$args->{'path'}, 'ls_dir_only'=>0, 'include_special'=>1);
-print @$listing; print "\n----------------\n";
